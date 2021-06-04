@@ -338,7 +338,8 @@ Vagrant.configure('2') do |config|
     #dockerfile location for container if using Dockerfile
     d.build_dir = "."
     d.build_args = ["-t", "ubuntu20-vagrant-ssh:0.1"]
-
+    
+    d.has_ssh = true
     #docker run --name vvv-develop-ubuntu-focal -d -i -t ubuntu:focal /bin/bash
     #d.image = "ubuntu:focal"
     #d.env= {

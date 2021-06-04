@@ -318,6 +318,39 @@ Vagrant.configure('2') do |config|
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
 
+# Docker provisioning
+  
+#config.vm.provision :shell do |shell|
+#  shell.inline = <<-SHELL
+#  apt-get update && apt-get install ssh -y
+#  SHELL
+#end
+
+#  config.vm.provision "docker" do |d|
+#    d.pull_images "ubuntu:focal"
+#  end
+  
+  # Configuration options for docker provider.
+  config.vm.provider "docker" do |d, override|
+    #docker provider can fail if a box is configured
+    override.vm.box = nil
+
+    #dockerfile location for container if using Dockerfile
+    d.build_dir = "."
+    d.build_args = ["-t", "ubuntu20-vagrant-ssh:0.1"]
+
+    #docker run --name vvv-develop-ubuntu-focal -d -i -t ubuntu:focal /bin/bash
+    #d.image = "ubuntu:focal"
+    #d.env= {
+    #  "TZ":"America/New_York"
+    #  }
+    d.name = "vvv-develop"
+    #wrong section d.build_args=["RUN apt-get update && apt-get install ssh -y"]
+    d.create_args = ["-t" ]
+  
+  end
+
+
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
     v.customize ['modifyvm', :id, '--uartmode1', 'file', File.join(vagrant_dir, 'log/ubuntu-cloudimg-console.log')]
@@ -498,6 +531,7 @@ Vagrant.configure('2') do |config|
   # Please see VVV and Vagrant documentation for additional details.
   #
   # config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", id: "ssh", guest: 22, host: 5022
 
   # Drive mapping
   #
